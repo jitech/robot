@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+  <head>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="sockjs-0.3.4.min.js"></script>
+    <script src="stomp.min.js"></script>
+  </head>
+
+  <body>
+    <p th:inline="text">
+      You are logged as: <b>[[${#httpServletRequest.remoteUser}]]</b>
+      (<a href="/logout">logout</a>)
+    </p>
+    <select id="from">
+    	<option value="UserA">UserA</option>
+    	<option value="UserB">UserB</option>
+    	<option value="UserC">UserC</option>
+    </select>
+    
+    <br/>
+    
+    <textarea id="notifications-area" cols="60" rows="10" readonly="readonly"></textarea>
+    
+    <br/>
+    
+    <input id="text" type="text" placeholder="Digite aqui..."/>
+    
+    <br/>
+    
+    <input id="do-some-action" type="button" value="Click me" />
+
+    <!-- Javascript functions -->
+    <script>
+
+      /**
+       * Send an action to the server.
+       */
+      function sendAction(event) {
+    	  
+    	var from = document.getElementById('from').value; 
+    	var text = document.getElementById('text').value; 
+    	
+    	document.getElementById('text').value = "";
+    	
+    	$("#notifications-area").append("Me: "+ text + "\n");
+    	
+    	console.log("from: "+from);
+    	
+        event.preventDefault();
+        $.ajax({
+          url: "/someAction",
+          type: "POST",
+          data: jQuery.param({from: from, text: text})
+        });
+        return;
+      } // function sendAction
+      
+      /**
+       * Init operations.
+       */
+      $(document).ready(function() {
+        
+        // Bind the on-click event for the button element.
+        $("#do-some-action").on("click", sendAction);
+        
+      });
+
+    </script>
+    
+    <script>
+
+      /**
+       * Open the web socket connection and subscribe the "/notify" channel.
+       */
+      function connect() {
+
+        // Create and init the SockJS object
+        var socket = new SockJS('/ws');
+        var stompClient = Stomp.over(socket);
+
+        // Subscribe the '/notify' channell
+        stompClient.connect({}, function(frame) {
+          stompClient.subscribe('/user/queue/notify', function(notification) {
+
+            // Call the notify function when receive a notification
+            notify(JSON.parse(notification.body).content);
+
+          });
+        });
+        
+        return;
+      } // function connect
+      
+      /**
+       * Display the notification message.
+       */
+      function notify(message) {
+        $("#notifications-area").append(message + "\n");
+        return;
+      }
+      
+      /**
+       * Init operations.
+       */
+      $(document).ready(function() {
+        
+        // Start the web socket connection.
+        connect();
+        
+      });
+
+    </script>
+
+  	<br />
+    <hr />
+    Proudly handcrafted by
+    <a href='http://netgloo.com/en'>Netgloo</a>
+
+  </body>
+
+</html>
