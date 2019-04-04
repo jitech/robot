@@ -7,15 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationService {
   
-  @Autowired
-  private SimpMessagingTemplate messagingTemplate;
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 
-  public void notify(Notification notification, String username) {
-    messagingTemplate.convertAndSendToUser(
-      username, 
-      "/queue/notify", 
-      notification
-    );
-    return;
-  }
+	public void notify(Notification notification, String username) throws Exception{
+		this.messagingTemplate.convertAndSendToUser(username, "/queue/notify", notification);
+	}
 }

@@ -1,38 +1,54 @@
 package br.com.robot.robot;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+import br.com.robot.entity.User;
+import br.com.robot.repository.UserRepository;
+
+@RestController
 public class MainController {
 
-  @Autowired
-  private NotificationService notificationService;
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private NotificationService notificationService;
 
-  @RequestMapping("/")
-  public String index() {
-    return "index";
-  }
+	@RequestMapping("/")
+	public ModelAndView index() {
+		return new ModelAndView("index");
+	}
 
-  @RequestMapping(value = "/someAction", method = RequestMethod.POST)
-  @ResponseBody
-  public ResponseEntity<?> someAction(@RequestParam(value="from") String from, @RequestParam(value="text") String text) {
+	@RequestMapping(value = "/someAction", method = RequestMethod.POST)
+	public Object someAction(@RequestParam(value="text") String text) {
 
-	  if(text != null && !text.equals("")) {	  
-		  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	  
-		  notificationService.notify(new Notification(authentication.getName() + ": " +text), from);
-	  }
+		try {
+				if(text != null && !text.equals("")) {	  
+					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	  
+			
+					List<User> users = userRepository.findAll(authentication.getName());
+			
+					for(User user : users) {
+						notificationService.notify(new Notification("<br/>"+authentication.getName() + ": " +text), user.getName());
+					}
+				}
    
-	  return new ResponseEntity<>(HttpStatus.OK);
-  }
-
+				return HttpStatus.OK;
+				
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return HttpStatus.BAD_REQUEST;
+		}
+	}
 }
