@@ -29,5 +29,6 @@ public class Application implements CommandLineRunner {
     	userRepository.save(new User("UserA"));
     	userRepository.save(new User("UserB"));
     	userRepository.save(new User("UserC"));
+    	System.out.println("Salvou usuarios");
     }
 }
