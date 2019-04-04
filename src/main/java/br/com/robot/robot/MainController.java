@@ -27,9 +27,10 @@ public class MainController {
   @ResponseBody
   public ResponseEntity<?> someAction(@RequestParam(value="from") String from, @RequestParam(value="text") String text) {
 
-	  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	  
-	  notificationService.notify(new Notification(authentication.getName() + ": " +text), from);
+	  if(text != null && !text.equals("")) {	  
+		  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	  
+		  notificationService.notify(new Notification(authentication.getName() + ": " +text), from);
+	  }
    
 	  return new ResponseEntity<>(HttpStatus.OK);
   }
