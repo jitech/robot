@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="USER_")
+@Table(name="USER_ROBOT")
 public class User extends GenericEntity {
 	
 	@Column(name="NAME", nullable = false, length = 100)

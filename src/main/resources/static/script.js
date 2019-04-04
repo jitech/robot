@@ -19,11 +19,17 @@ function sendAction(event) {
     
     return;
 }      
-      
-   
-$(document).ready(function() {
-	$("#do-some-action").on("click", sendAction);        
+
+$(function(){
+	$("#message-history input").keypress(function (e) {	
+		    if (e.keyCode == 13) {
+		    	sendAction(e);
+		    }
+	});
 });
+
+
+   
       
       
 function connect() {
