@@ -3,13 +3,11 @@ function sendAction(event) {
     var text = document.getElementById('text').value; 
     	
     document.getElementById('text').value = "";
-    	
-    $("#notifications-area").append("<br/>Me: "+ text);
-    	    	
+  	
     event.preventDefault();
     
     $.ajax({
-          url: "/someAction",
+          url: "/call",
           type: "POST",
           data: jQuery.param({text: text})
     });
@@ -27,11 +25,7 @@ $(function(){
 		    }
 	});
 });
-
-
-   
-      
-      
+     
 function connect() {
 
 	var socket = new SockJS('/ws');

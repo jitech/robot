@@ -1,6 +1,5 @@
 package br.com.robot.robot;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,9 @@ public class MainController {
 	public ModelAndView index() {
 		return new ModelAndView("index");
 	}
-	
-	@RequestMapping(value = "/hello", method = RequestMethod.GET)
-	public ModelAndView hello() {
-		return new ModelAndView("hello");
-	}
 
-	@RequestMapping(value = "/someAction", method = RequestMethod.POST)
-	public Object someAction(@RequestParam(value="text") String text) {
+	@RequestMapping(value = "/call", method = RequestMethod.POST)
+	public Object call(@RequestParam(value="text") String text) {
 
 		try {
 				if(text != null && !text.equals("")) {	  
@@ -44,8 +38,21 @@ public class MainController {
 			
 					List<User> users = userRepository.findAll(authentication.getName());
 			
+					if(text.contains(".jpg")) {
+						notificationService.notify(new Notification("<br/>Me: <br/><img src='"+text+"' style='width: 200px' />"), authentication.getName());
+				
+					}else {				
+						notificationService.notify(new Notification("<br/>Me: " +text), authentication.getName());
+					}
+					
 					for(User user : users) {
-						notificationService.notify(new Notification("<br/>"+authentication.getName() + ": " +text), user.getName());
+						
+						if(text.contains(".jpg")) {
+							notificationService.notify(new Notification("<br/>"+authentication.getName() + ": <br/><img src='"+text+"' style='width: 200px' />"), user.getName());
+					
+						}else {				
+							notificationService.notify(new Notification("<br/>"+authentication.getName() + ": " +text), user.getName());
+						}
 					}
 				}
    
