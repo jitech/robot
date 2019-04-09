@@ -6,14 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import br.com.robot.entity.Talk;
 import br.com.robot.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface TalkRepository extends JpaRepository<Talk, Long> {
 
-	@Query("SELECT u FROM User u WHERE u.name = ?1")
-	public User find(String name);
-	
-	@Query("SELECT u FROM User u WHERE u.name != ?1")
-	public List<User> findAll(String name);
+	@Query("SELECT t FROM Talk t WHERE t.sender = ?1 ")
+	public List<Talk> findAllBySender(User user);
 }

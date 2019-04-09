@@ -1,16 +1,17 @@
-function sendAction(event) {
+function publish(event) {
     	  
-    //var text = document.getElementById('text').src; 
+    var title = "@desenvolvedorjava"; 
 	var text = document.getElementById('text').value; 
     	
+	//document.getElementById('title').value = "";
     document.getElementById('text').value = "";
   	
     event.preventDefault();
     
     $.ajax({
-          url: "/call",
+          url: "/publish",
           type: "POST",
-          data: jQuery.param({text: text})
+          data: jQuery.param({title: title, text: text})
     });
     
     var objDiv = document.getElementById("notifications-area");
@@ -22,10 +23,31 @@ function sendAction(event) {
 $(function(){
 	$("#message-history input").keypress(function (e) {	
 		    if (e.keyCode == 13) {
-		    	sendAction(e);
+		    	//sendAction(e);
+		    	publish(e);
 		    }
 	});
 });
+
+function sendAction(event) {
+    	  
+	var text = document.getElementById('text').value; 
+    	
+    document.getElementById('text').value = "";
+  	
+    event.preventDefault();
+    
+    $.ajax({
+          url: "/talk",
+          type: "POST",
+          data: jQuery.param({text: text})
+    });
+    
+    var objDiv = document.getElementById("notifications-area");
+    document.getElementById("notifications-area").scrollTop = objDiv.scrollHeight
+    
+    return;
+}      
      
 function connect() {
 
