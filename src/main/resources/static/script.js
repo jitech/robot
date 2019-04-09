@@ -1,6 +1,7 @@
 function sendAction(event) {
     	  
-    var text = document.getElementById('text').value; 
+    //var text = document.getElementById('text').src; 
+	var text = document.getElementById('text').value; 
     	
     document.getElementById('text').value = "";
   	
